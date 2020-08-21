@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/new_request_btn"
+        android:id="@+id/new_entry_btn"
         android:icon="@android:drawable/ic_input_add"
-        android:title="Create new Request" />
+        android:title="Create new Entry" />
 </menu>

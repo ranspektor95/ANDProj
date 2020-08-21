@@ -1,19 +1,18 @@
 package com.ranspektor.andproj;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CreateRequestFragment#newInstance} factory method to
+ * Use the {@link CreateEntryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateRequestFragment extends Fragment {
+public class CreateEntryFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +23,7 @@ public class CreateRequestFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public CreateRequestFragment() {
+    public CreateEntryFragment() {
         // Required empty public constructor
     }
 
@@ -34,11 +33,11 @@ public class CreateRequestFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment CreateRequestFragment.
+     * @return A new instance of fragment CreateEntryFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CreateRequestFragment newInstance(String param1, String param2) {
-        CreateRequestFragment fragment = new CreateRequestFragment();
+    public static CreateEntryFragment newInstance(String param1, String param2) {
+        CreateEntryFragment fragment = new CreateEntryFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +58,6 @@ public class CreateRequestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_request, container, false);
+        return inflater.inflate(R.layout.fragment_create_entry, container, false);
     }
 }

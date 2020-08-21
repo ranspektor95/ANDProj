@@ -2,43 +2,41 @@ package com.ranspektor.andproj;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.ranspektor.andproj.models.Request;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-public class RequestDetailsFragment extends Fragment {
-    private Request req;
+import com.ranspektor.andproj.models.Entry;
+
+public class EntryDetailsFragment extends Fragment {
+    private Entry req;
     EditElementDelegate parent;
     TextView title;
     TextView content;
 
-    public RequestDetailsFragment() { }
+    public EntryDetailsFragment() { }
 
     interface EditElementDelegate {
-        void onEditClick(Request req);
+        void onEditClick(Entry req);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_request_details, container, false);
+        View view =  inflater.inflate(R.layout.fragment_entry_details, container, false);
         // todo set images from req;
-        title = view.findViewById(R.id.request_detail_title);
-        content = view.findViewById(R.id.request_detail_content);
+        title = view.findViewById(R.id.entry_detail_title);
+        content = view.findViewById(R.id.entry_detail_content);
 
-        req = RequestDetailsFragmentArgs.fromBundle(getArguments()).getReq();
+        req = EntryDetailsFragmentArgs.fromBundle(getArguments()).getReq();
         if(req != null ){
             update_display();
         }
@@ -50,7 +48,7 @@ public class RequestDetailsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, @Nullable MenuInflater inflater){
         super.onCreateOptionsMenu(menu,inflater);
-        inflater.inflate(R.menu.request_details_menu,menu);
+        inflater.inflate(R.menu.entry_details_menu,menu);
     }
 
     @Override
@@ -60,8 +58,8 @@ public class RequestDetailsFragment extends Fragment {
         //TODO check if user can edit and then
         setHasOptionsMenu(true);
 
-        if(context instanceof RequestDetailsFragment.EditElementDelegate){
-            parent = (RequestDetailsFragment.EditElementDelegate) getActivity();
+        if(context instanceof EntryDetailsFragment.EditElementDelegate){
+            parent = (EntryDetailsFragment.EditElementDelegate) getActivity();
         } else {
             throw new RuntimeException(context.toString());
         }

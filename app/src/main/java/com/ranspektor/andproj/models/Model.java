@@ -6,17 +6,17 @@ import java.util.List;
 public class Model {
     static public final Model instance = new Model();
 
-    private Model(){
+    private Model() {
 
     }
 
-    public List<Request> getAllRequests(){
-        List list = new LinkedList<Request>();
+    public List<Entry> getAllEntries() {
+        List<Entry> list = new LinkedList<>();
 
-        Request r = new Request();
+        Entry r = new Entry();
         r.title = "title";
 
-        Request rr = new Request();
+        Entry rr = new Entry();
         rr.title = "titlinggg";
 
         list.add(r);
@@ -25,7 +25,7 @@ public class Model {
         return list;
     }
 
-    Request getRequest(String id){
+    Entry getEntry(String id) {
         return null;
     }
 

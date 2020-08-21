@@ -1,19 +1,17 @@
 package com.ranspektor.andproj;
 
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import com.ranspektor.andproj.models.Entry;
 
-import com.ranspektor.andproj.models.Request;
-
-public class HomeActivity extends AppCompatActivity implements RequestListFragment.Delegate, RequestDetailsFragment.EditElementDelegate {
+public class HomeActivity extends AppCompatActivity implements EntryListFragment.Delegate, EntryDetailsFragment.EditElementDelegate {
 
     NavController navCtrl;
 
@@ -28,16 +26,16 @@ public class HomeActivity extends AppCompatActivity implements RequestListFragme
     }
 
     @Override
-    public void onItemSelected(Request req) {
+    public void onItemSelected(Entry req) {
        NavController navCtrl=  Navigation.findNavController(this,R.id.home_nav_host );
-        RequestListFragmentDirections.ActionRequestListFragmentToRequestDetailsFragment directions = RequestListFragmentDirections.actionRequestListFragmentToRequestDetailsFragment(req);
+        EntryListFragmentDirections.ActionEntryListFragmentToEntryDetailsFragment directions = EntryListFragmentDirections.actionEntryListFragmentToEntryDetailsFragment(req);
         navCtrl.navigate(directions);
     }
 
     @Override
-    public void onEditClick(Request req) {
+    public void onEditClick(Entry req) {
         NavController navCtrl=  Navigation.findNavController(this,R.id.home_nav_host );
-        RequestDetailsFragmentDirections.ActionRequestDetailsFragmentToEditRequestFragment directions = RequestDetailsFragmentDirections.actionRequestDetailsFragmentToEditRequestFragment(req);
+        EntryDetailsFragmentDirections.ActionEntryDetailsFragmentToEditEntryFragment directions = EntryDetailsFragmentDirections.actionEntryDetailsFragmentToEditEntryFragment(req);
         navCtrl.navigate(directions);
     }
 
@@ -47,8 +45,8 @@ public class HomeActivity extends AppCompatActivity implements RequestListFragme
             case android.R.id.home:{
                 navCtrl.navigateUp();
                 return true;}
-            case R.id.menu_add_request:{
-                navCtrl.navigate(RequestListFragmentDirections.actionRequestListFragmentToCreateRequestFragment());
+            case R.id.menu_add_entry:{
+                navCtrl.navigate(EntryListFragmentDirections.actionEntryListFragmentToCreateEntryFragment());
             }
             default: return super.onOptionsItemSelected(item);
         }
@@ -57,7 +55,7 @@ public class HomeActivity extends AppCompatActivity implements RequestListFragme
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         super.onCreateOptionsMenu(menu);
-        //getMenuInflater().inflate(R.menu.request_list_menu,menu);
+        //getMenuInflater().inflate(R.menu.entry_list_menu,menu);
         return true;
     }
 

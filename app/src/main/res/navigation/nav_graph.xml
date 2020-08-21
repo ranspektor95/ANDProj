@@ -3,43 +3,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/requestListFragment">
+    app:startDestination="@id/entryListFragment">
 
     <fragment
-        android:id="@+id/requestListFragment"
-        android:name="com.ranspektor.andproj.RequestListFragment"
-        android:label="Requests" >
+        android:id="@+id/entryListFragment"
+        android:name="com.ranspektor.andproj.EntryListFragment"
+        android:label="Entries" >
         <action
-            android:id="@+id/action_requestListFragment_to_requestDetailsFragment"
-            app:destination="@id/requestDetailsFragment" />
+            android:id="@+id/action_entryListFragment_to_entryDetailsFragment"
+            app:destination="@id/entryDetailsFragment" />
         <action
-            android:id="@+id/action_requestListFragment_to_createRequestFragment"
-            app:destination="@id/createRequestFragment" />
+            android:id="@+id/action_entryListFragment_to_createEntryFragment"
+            app:destination="@id/createEntryFragment" />
     </fragment>
     <fragment
-        android:id="@+id/requestDetailsFragment"
-        android:name="com.ranspektor.andproj.RequestDetailsFragment"
+        android:id="@+id/entryDetailsFragment"
+        android:name="com.ranspektor.andproj.EntryDetailsFragment"
         android:label="Details"
-        tools:layout="@layout/fragment_request_details">
+        tools:layout="@layout/fragment_entry_details">
         <action
-            android:id="@+id/action_requestDetailsFragment_to_editRequestFragment"
-            app:destination="@id/editRequestFragment" />
+            android:id="@+id/action_entryDetailsFragment_to_editEntryFragment"
+            app:destination="@id/editEntryFragment" />
         <argument
             android:name="req"
-            app:argType="com.ranspektor.andproj.models.Request" />
+            app:argType="com.ranspektor.andproj.models.Entry" />
     </fragment>
     <fragment
-        android:id="@+id/editRequestFragment"
-        android:name="com.ranspektor.andproj.EditRequestFragment"
+        android:id="@+id/editEntryFragment"
+        android:name="com.ranspektor.andproj.EditEntryFragment"
         android:label="Edit"
-        tools:layout="@layout/fragment_edit_request">
+        tools:layout="@layout/fragment_edit_entry">
         <argument
             android:name="req"
-            app:argType="com.ranspektor.andproj.models.Request" />
+            app:argType="com.ranspektor.andproj.models.Entry" />
     </fragment>
     <fragment
-        android:id="@+id/createRequestFragment"
-        android:name="com.ranspektor.andproj.CreateRequestFragment"
+        android:id="@+id/createEntryFragment"
+        android:name="com.ranspektor.andproj.CreateEntryFragment"
         android:label="Create"
-        tools:layout="@layout/fragment_create_request" />
+        tools:layout="@layout/fragment_create_entry" />
 </navigation>

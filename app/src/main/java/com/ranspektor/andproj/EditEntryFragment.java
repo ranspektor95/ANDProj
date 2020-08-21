@@ -1,20 +1,19 @@
 package com.ranspektor.andproj;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ranspektor.andproj.models.Request;
+import androidx.fragment.app.Fragment;
 
-public class EditRequestFragment extends Fragment {
-    private Request req;
+import com.ranspektor.andproj.models.Entry;
+
+public class EditEntryFragment extends Fragment {
+    private Entry req;
 
 
-    public EditRequestFragment() {
+    public EditEntryFragment() {
         // Required empty public constructor
     }
 
@@ -23,9 +22,9 @@ public class EditRequestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_edit_request, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_entry, container, false);
 
-        req = EditRequestFragmentArgs.fromBundle(getArguments()).getReq();
+        req = EditEntryFragmentArgs.fromBundle(getArguments()).getReq();
         if(req != null ){
             update_display();
         }

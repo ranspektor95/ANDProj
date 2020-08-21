@@ -2,13 +2,6 @@ package com.ranspektor.andproj;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,41 +9,47 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.ranspektor.andproj.models.Entry;
 import com.ranspektor.andproj.models.Model;
-import com.ranspektor.andproj.models.Request;
 
 import java.util.List;
 
 
-public class RequestListFragment extends Fragment {
+public class EntryListFragment extends Fragment {
 
     Delegate parent;
     RecyclerView list;
-    List<Request> requestsData;
+    List<Entry> entriesData;
 
-    public RequestListFragment() {
-        requestsData = Model.instance.getAllRequests();
+    public EntryListFragment() {
+        entriesData = Model.instance.getAllEntries();
     }
 
     interface Delegate{
-        void onItemSelected(Request req);
+        void onItemSelected(Entry req);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_request_list_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_entry_list_view, container, false);
 
-        list = view.findViewById(R.id.request_list);
+        list = view.findViewById(R.id.entry_list);
         list.setHasFixedSize(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         list.setLayoutManager(layoutManager);
 
-        RequestListAdapter adapter = new RequestListAdapter();
+        EntryListAdapter adapter = new EntryListAdapter();
         list.setAdapter(adapter);
 
         adapter.setOnItemClickListener((position -> {
-            Request req = requestsData.get(position);
+            Entry req = entriesData.get(position);
             parent.onItemSelected(req);
         }));
 
@@ -60,7 +59,7 @@ public class RequestListFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, @Nullable MenuInflater inflater){
         super.onCreateOptionsMenu(menu,inflater);
-        inflater.inflate(R.menu.request_list_menu,menu);
+        inflater.inflate(R.menu.entry_list_menu,menu);
     }
 
     @Override
@@ -81,13 +80,13 @@ public class RequestListFragment extends Fragment {
         parent= null;
     }
 
-    static class RequestViewHolder extends RecyclerView.ViewHolder{
-        TextView requestTitle;
+    static class EntryViewHolder extends RecyclerView.ViewHolder{
+        TextView entryTitle;
 
-        public RequestViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
+        public EntryViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
-            requestTitle = itemView.findViewById(R.id.row_request_title);
-            requestTitle.setOnClickListener((v)->{
+            entryTitle = itemView.findViewById(R.id.row_entry_title);
+            entryTitle.setOnClickListener((v)->{
                 if (listener != null ){
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION){
@@ -97,8 +96,8 @@ public class RequestListFragment extends Fragment {
             });
         }
 
-        public void bind(Request req){
-            requestTitle.setText(req.title);
+        public void bind(Entry req){
+            entryTitle.setText(req.title);
         }
     }
 
@@ -106,29 +105,29 @@ public class RequestListFragment extends Fragment {
         void onClick(int position);
     }
 
-    class RequestListAdapter extends RecyclerView.Adapter<RequestViewHolder> {
+    class EntryListAdapter extends RecyclerView.Adapter<EntryViewHolder> {
         private OnItemClickListener listener;
 
         void setOnItemClickListener(OnItemClickListener listener) {this.listener = listener;}
 
         @NonNull
         @Override
-        public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_request_list_row_item, parent, false);
-            RequestViewHolder vh = new RequestViewHolder(v,listener);
+        public EntryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_entry_list_row_item, parent, false);
+            EntryViewHolder vh = new EntryViewHolder(v,listener);
             return vh;
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RequestViewHolder holder, int position) {
-            Request req = requestsData.get(position);
+        public void onBindViewHolder(@NonNull EntryViewHolder holder, int position) {
+            Entry req = entriesData.get(position);
             holder.bind(req);
-//            holder.requestTitle.setText(requestsData.get(position).title);
+//            holder.entryTitle.setText(entriesData.get(position).title);
         }
 
         @Override
         public int getItemCount() {
-            return requestsData.size();
+            return entriesData.size();
         }
 
     }
