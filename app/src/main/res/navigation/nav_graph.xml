@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/requestListFragment">
+
+    <fragment
+        android:id="@+id/requestListFragment"
+        android:name="com.ranspektor.andproj.RequestListFragment"
+        android:label="Requests" >
+        <action
+            android:id="@+id/action_requestListFragment_to_requestDetailsFragment"
+            app:destination="@id/requestDetailsFragment" />
+        <action
+            android:id="@+id/action_requestListFragment_to_createRequestFragment"
+            app:destination="@id/createRequestFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestDetailsFragment"
+        android:name="com.ranspektor.andproj.RequestDetailsFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_request_details">
+        <action
+            android:id="@+id/action_requestDetailsFragment_to_editRequestFragment"
+            app:destination="@id/editRequestFragment" />
+        <argument
+            android:name="req"
+            app:argType="com.ranspektor.andproj.models.Request" />
+    </fragment>
+    <fragment
+        android:id="@+id/editRequestFragment"
+        android:name="com.ranspektor.andproj.EditRequestFragment"
+        android:label="Edit"
+        tools:layout="@layout/fragment_edit_request">
+        <argument
+            android:name="req"
+            app:argType="com.ranspektor.andproj.models.Request" />
+    </fragment>
+    <fragment
+        android:id="@+id/createRequestFragment"
+        android:name="com.ranspektor.andproj.CreateRequestFragment"
+        android:label="Create"
+        tools:layout="@layout/fragment_create_request" />
+</navigation>
