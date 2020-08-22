@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ranspektor.andproj.models.Entry;
 import com.ranspektor.andproj.models.Model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -25,14 +26,20 @@ public class EntryListFragment extends Fragment {
 
     Delegate parent;
     RecyclerView list;
-    List<Entry> entriesData;
+    List<Entry> entriesData = new LinkedList<>();
+    EntryListAdapter adapter;
 
-    public EntryListFragment() {
-        entriesData = Model.instance.getAllEntries();
+    interface Delegate {
+        void onItemSelected(Entry req);
     }
 
-    interface Delegate{
-        void onItemSelected(Entry req);
+    public EntryListFragment() {
+        Model.instance.GetAllEntries(data -> {
+            entriesData = data;
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -45,7 +52,7 @@ public class EntryListFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         list.setLayoutManager(layoutManager);
 
-        EntryListAdapter adapter = new EntryListAdapter();
+        adapter = new EntryListAdapter();
         list.setAdapter(adapter);
 
         adapter.setOnItemClickListener((position -> {
@@ -57,9 +64,9 @@ public class EntryListFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, @Nullable MenuInflater inflater){
-        super.onCreateOptionsMenu(menu,inflater);
-        inflater.inflate(R.menu.entry_list_menu,menu);
+    public void onCreateOptionsMenu(Menu menu, @Nullable MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.entry_list_menu, menu);
     }
 
     @Override
@@ -67,7 +74,7 @@ public class EntryListFragment extends Fragment {
         super.onAttach(context);
         setHasOptionsMenu(true);
 
-        if(context instanceof Delegate){
+        if (context instanceof Delegate) {
             parent = (Delegate) getActivity();
         } else {
             throw new RuntimeException(context.toString());
@@ -77,45 +84,46 @@ public class EntryListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        parent= null;
+        parent = null;
     }
 
-    static class EntryViewHolder extends RecyclerView.ViewHolder{
+    static class EntryViewHolder extends RecyclerView.ViewHolder {
         TextView entryTitle;
 
         public EntryViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             entryTitle = itemView.findViewById(R.id.row_entry_title);
-            entryTitle.setOnClickListener((v)->{
-                if (listener != null ){
+            entryTitle.setOnClickListener((v) -> {
+                if (listener != null) {
                     int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION){
+                    if (position != RecyclerView.NO_POSITION) {
                         listener.onClick(position);
                     }
                 }
             });
         }
 
-        public void bind(Entry req){
+        public void bind(Entry req) {
             entryTitle.setText(req.title);
         }
     }
 
-    interface OnItemClickListener{
+    interface OnItemClickListener {
         void onClick(int position);
     }
 
     class EntryListAdapter extends RecyclerView.Adapter<EntryViewHolder> {
         private OnItemClickListener listener;
 
-        void setOnItemClickListener(OnItemClickListener listener) {this.listener = listener;}
+        void setOnItemClickListener(OnItemClickListener listener) {
+            this.listener = listener;
+        }
 
         @NonNull
         @Override
         public EntryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_entry_list_row_item, parent, false);
-            EntryViewHolder vh = new EntryViewHolder(v,listener);
-            return vh;
+            return new EntryViewHolder(v, listener);
         }
 
         @Override
@@ -131,8 +139,6 @@ public class EntryListFragment extends Fragment {
         }
 
     }
-
-
 
 
 }
