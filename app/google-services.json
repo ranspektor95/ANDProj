@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "810251918575",
+    "firebase_url": "https://andapp-cfc4f.firebaseio.com",
+    "project_id": "andapp-cfc4f",
+    "storage_bucket": "andapp-cfc4f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810251918575:android:b891984cc854386de74f1a",
+        "android_client_info": {
+          "package_name": "com.ranspektor.andproj"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "810251918575-3d0k23o8gqk8te2vti43uulre24qj4lk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtTY5vBsjLMseSyMn55JmdqHdflZ45qg0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "810251918575-3d0k23o8gqk8te2vti43uulre24qj4lk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

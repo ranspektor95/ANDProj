@@ -12,11 +12,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.ranspektor.andproj.models.Entry;
-import com.ranspektor.andproj.models.Model;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,20 +28,31 @@ public class EntryListFragment extends Fragment {
 
     Delegate parent;
     RecyclerView list;
-    List<Entry> entriesData = new LinkedList<>();
+    List<Entry> entriesData = new LinkedList<>(); //delete
     EntryListAdapter adapter;
+    EntryListViewModel viewModel;
+    LiveData<List<Entry>> liveData;
 
     interface Delegate {
-        void onItemSelected(Entry req);
+        void onItemSelected(Entry entry);
     }
 
     public EntryListFragment() {
-        Model.instance.GetAllEntries(data -> {
-            entriesData = data;
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
-        });
+
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        setHasOptionsMenu(true);
+
+        if (context instanceof Delegate) {
+            parent = (Delegate) getActivity();
+        } else {
+            throw new RuntimeException(context.toString());
+        }
+        viewModel = new ViewModelProvider(this).get(EntryListViewModel.class);
+
     }
 
     @Override
@@ -56,29 +69,22 @@ public class EntryListFragment extends Fragment {
         list.setAdapter(adapter);
 
         adapter.setOnItemClickListener((position -> {
-            Entry req = entriesData.get(position);
-            parent.onItemSelected(req);
+            Entry entry = entriesData.get(position);
+            parent.onItemSelected(entry);
         }));
 
+        liveData = viewModel.getLiveData();
+        liveData.observe(getViewLifecycleOwner(), entries -> {
+            entriesData = entries;
+            adapter.notifyDataSetChanged();
+        });
+
+        SwipeRefreshLayout swipeRefresh = view.findViewById(R.id.entry_list_swipe_refresh);
+        swipeRefresh.setOnRefreshListener(() -> {
+            viewModel.refresh(() -> swipeRefresh.setRefreshing(false));
+        });
+
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, @Nullable MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.entry_list_menu, menu);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        setHasOptionsMenu(true);
-
-        if (context instanceof Delegate) {
-            parent = (Delegate) getActivity();
-        } else {
-            throw new RuntimeException(context.toString());
-        }
     }
 
     @Override
@@ -103,10 +109,18 @@ public class EntryListFragment extends Fragment {
             });
         }
 
-        public void bind(Entry req) {
-            entryTitle.setText(req.title);
+        public void bind(Entry entry) {
+            entryTitle.setText(entry.title);
         }
     }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, @Nullable MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.entry_list_menu, menu);
+    }
+
 
     interface OnItemClickListener {
         void onClick(int position);
@@ -128,8 +142,8 @@ public class EntryListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull EntryViewHolder holder, int position) {
-            Entry req = entriesData.get(position);
-            holder.bind(req);
+            Entry entry = entriesData.get(position);
+            holder.bind(entry);
 //            holder.entryTitle.setText(entriesData.get(position).title);
         }
 

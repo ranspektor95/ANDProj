@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.ranspektor.andproj.models.Entry;
 
 public class EntryDetailsFragment extends Fragment {
-    private Entry req;
+    private Entry entry;
     EditElementDelegate parent;
     TextView title;
     TextView content;
@@ -25,19 +25,19 @@ public class EntryDetailsFragment extends Fragment {
     public EntryDetailsFragment() { }
 
     interface EditElementDelegate {
-        void onEditClick(Entry req);
+        void onEditClick(Entry entry);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_entry_details, container, false);
-        // todo set images from req;
+        // todo set images from entry;
         title = view.findViewById(R.id.entry_detail_title);
         content = view.findViewById(R.id.entry_detail_content);
 
-        req = EntryDetailsFragmentArgs.fromBundle(getArguments()).getReq();
-        if(req != null ){
+        entry = EntryDetailsFragmentArgs.fromBundle(getArguments()).getReq();
+        if(entry != null ){
             update_display();
         }
 
@@ -72,13 +72,13 @@ public class EntryDetailsFragment extends Fragment {
     }
 
     private void onEditClick() {
-        parent.onEditClick(req);
+        parent.onEditClick(entry);
     }
 
 
     private void update_display(){
-        title.setText(req.title);
-        content.setText(req.content);
+        title.setText(entry.title);
+        content.setText(entry.content);
     }
 
     @Override

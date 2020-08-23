@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase;
 import com.ranspektor.andproj.ANDApplication;
 
 //When changing db (schemas, properties, methods, etc...) change version number
-@Database(entities = {Entry.class}, version = 1)
+@Database(entities = {Entry.class}, version = 2)
 abstract class AppLocalDbRepository extends RoomDatabase {
     public abstract EntryDao entryDao();
 }

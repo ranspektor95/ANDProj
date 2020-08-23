@@ -1,5 +1,6 @@
 package com.ranspektor.andproj.models;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -11,7 +12,7 @@ import java.util.List;
 @Dao
 public interface EntryDao {
     @Query("select * from Entry")
-    List<Entry> getAll();
+    LiveData<List<Entry>> getAll();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Entry... entries);
