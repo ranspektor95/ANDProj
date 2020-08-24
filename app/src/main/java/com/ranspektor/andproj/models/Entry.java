@@ -20,7 +20,9 @@ public class Entry implements Serializable {
     public String content;
     public String imgUrl;
     public String userId;
-    long lastUpdated;
+    public long lastUpdated;
+    public boolean isDeleted;
+
 
     public Entry() {
     }
@@ -74,11 +76,19 @@ public class Entry implements Serializable {
         this.userId = userId;
     }
 
-    public double getLastUpdated() {
+    public long getLastUpdated() {
         return lastUpdated;
     }
 
     public void setLastUpdated(long lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

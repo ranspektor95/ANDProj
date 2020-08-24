@@ -28,17 +28,21 @@ public class EntryListFragment extends Fragment {
 
     Delegate parent;
     RecyclerView list;
-    List<Entry> entriesData = new LinkedList<>(); //delete
+    List<Entry> entriesData = new LinkedList<>();
     EntryListAdapter adapter;
-    EntryListViewModel viewModel;
-    LiveData<List<Entry>> liveData;
+    EntriesListViewModel entriesViewModel;
+    UserEntriesListViewModel userEntriesViewModel;
+
+    LiveData<List<Entry>> entriesLiveData;
+    LiveData<List<Entry>> userEntriesLiveData;
+//  UserModel.instance.addUser();
+//  EntryModel.instance.addEntry();
 
     interface Delegate {
         void onItemSelected(Entry entry);
     }
 
     public EntryListFragment() {
-
     }
 
     @Override
@@ -51,8 +55,8 @@ public class EntryListFragment extends Fragment {
         } else {
             throw new RuntimeException(context.toString());
         }
-        viewModel = new ViewModelProvider(this).get(EntryListViewModel.class);
-
+        entriesViewModel = new ViewModelProvider(this).get(EntriesListViewModel.class);
+        userEntriesViewModel = new ViewModelProvider(this).get(UserEntriesListViewModel.class);
     }
 
     @Override
@@ -73,15 +77,15 @@ public class EntryListFragment extends Fragment {
             parent.onItemSelected(entry);
         }));
 
-        liveData = viewModel.getLiveData();
-        liveData.observe(getViewLifecycleOwner(), entries -> {
+        entriesLiveData = entriesViewModel.getLiveData();
+        entriesLiveData.observe(getViewLifecycleOwner(), entries -> {
             entriesData = entries;
             adapter.notifyDataSetChanged();
         });
 
         SwipeRefreshLayout swipeRefresh = view.findViewById(R.id.entry_list_swipe_refresh);
         swipeRefresh.setOnRefreshListener(() -> {
-            viewModel.refresh(() -> swipeRefresh.setRefreshing(false));
+            entriesViewModel.refresh(() -> swipeRefresh.setRefreshing(false));
         });
 
         return view;

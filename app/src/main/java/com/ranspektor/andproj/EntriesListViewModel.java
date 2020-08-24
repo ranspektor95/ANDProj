@@ -5,10 +5,11 @@ import androidx.lifecycle.ViewModel;
 
 import com.ranspektor.andproj.models.Entry;
 import com.ranspektor.andproj.models.EntryModel;
+import com.ranspektor.andproj.models.Listeners;
 
 import java.util.List;
 
-public class EntryListViewModel extends ViewModel {
+public class EntriesListViewModel extends ViewModel {
     LiveData<List<Entry>> liveData;
 
     public LiveData<List<Entry>> getLiveData() {
@@ -18,7 +19,7 @@ public class EntryListViewModel extends ViewModel {
         return liveData;
     }
 
-    public void refresh(EntryModel.CompListener compListener) {
+    public void refresh(Listeners.CompListener compListener) {
         EntryModel.instance.refreshEntryList(compListener);
     }
 }

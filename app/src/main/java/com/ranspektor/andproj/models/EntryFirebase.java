@@ -2,11 +2,18 @@ package com.ranspektor.andproj.models;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +23,7 @@ public class EntryFirebase {
     final static String ENTRIES_COLLECTION = "entries";
 
 
-    public static void getAllEntriesSince(long since, final EntryModel.Listener<List<Entry>> listener) {
+    public static void getAllEntries(long since, final Listeners.Listener<List<Entry>> listener) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Timestamp ts = new Timestamp(since, 0);
         db.collection(ENTRIES_COLLECTION)
@@ -35,28 +42,36 @@ public class EntryFirebase {
                     listener.onComplete(entriesData);
                     Log.d("TAG", "refresh " + entriesData.size());
                 });
-
     }
 
-    public static void getAllEntries(final EntryModel.Listener<List<Entry>> listener) {
+    static void getAllUserEntries(String userId, long since, final Listeners.Listener<List<Entry>> listener) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Timestamp timestamp = new Timestamp(new Date(since));
         db.collection(ENTRIES_COLLECTION)
-                .get()
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("isDeleted", false)
+                .whereGreaterThanOrEqualTo("lastUpdated", timestamp).get()
                 .addOnCompleteListener(task -> {
-                    List<Entry> entriesData = null;
+                    List<Entry> entries;
                     if (task.isSuccessful()) {
-                        entriesData = new LinkedList<>();
-                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                            Entry entry = doc.toObject(Entry.class);
-                            entriesData.add(entry);
-                        }
+                        entries = new LinkedList<>();
+                        if (task.getResult() != null)
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
+                                Map<String, Object> json = doc.getData();
+                                Entry entry = factory(json);
+                                entry.setId(doc.getId());
+                                entries.add(entry);
+                            }
+                        listener.onComplete(entries);
+                    } else {
+                        throw new RuntimeException(task.getException());
                     }
-                    listener.onComplete(entriesData);
                 });
     }
 
-    public static void addEntry(Entry entry, final EntryModel.Listener<Boolean> listener) {
+    public static void addEntry(Entry entry, final Listeners.Listener<Boolean> listener) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        entry.setUserId(UserFirebase.getCurrentUserId());
         db.collection(ENTRIES_COLLECTION)
                 .document(entry.getId())
                 .set(toJson(entry))
@@ -65,6 +80,35 @@ public class EntryFirebase {
                         listener.onComplete(task.isSuccessful());
                     }
                 });
+    }
+
+    public static void getEntry(final String entryId, final Listeners.Listener<Entry> listener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(ENTRIES_COLLECTION)
+                .document(entryId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    DocumentSnapshot entry = task.getResult();
+                    Map<String, Object> json = entry != null
+                            ? entry.getData()
+                            : null;
+                    if (json != null)
+                        listener.onComplete(factory(json));
+                });
+    }
+
+    public static void updateEntry(Entry entry, final Listeners.Listener<Boolean> listener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(ENTRIES_COLLECTION).document(entry.getId()).set(toJson(entry))
+                .addOnCompleteListener(task -> listener.onComplete(task.isSuccessful()));
+    }
+
+    public static void deleteEntry(final Entry entry, final Listeners.Listener<Boolean> listener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(ENTRIES_COLLECTION)
+                .document(entry.getId())
+                .update("isDeleted", true)
+                .addOnCompleteListener(task -> listener.onComplete(task.isSuccessful()));
     }
 
     private static Entry factory(Map<String, Object> json) {
