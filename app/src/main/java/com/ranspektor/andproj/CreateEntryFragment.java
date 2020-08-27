@@ -1,63 +1,93 @@
 package com.ranspektor.andproj;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CreateEntryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.ranspektor.andproj.models.Entry;
+import com.ranspektor.andproj.models.EntryModel;
+import com.ranspektor.andproj.models.Listeners;
+
 public class CreateEntryFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    ImageView image;
+    EditText title;
+    EditText content;
+    ProgressBar progressBar;
+    Button takePhotoBtn;
+    Button sendBtn;
+    Bitmap imageBitmap;
 
     public CreateEntryFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CreateEntryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CreateEntryFragment newInstance(String param1, String param2) {
-        CreateEntryFragment fragment = new CreateEntryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
+    
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_entry, container, false);
+        View view = inflater.inflate(R.layout.fragment_create_entry, container, false);
+        
+        image = view.findViewById(R.id.add_entry_image);
+        title = view.findViewById(R.id.add_entry_title);
+        content = view.findViewById(R.id.add_entry_content);
+        progressBar = view.findViewById(R.id.add_entry_progress);
+        progressBar.setVisibility(View.INVISIBLE);
+        takePhotoBtn = view.findViewById(R.id.add_entry_take_photo_btn);
+
+        takePhotoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhoto();
+            }
+        });
+
+        sendBtn = view.findViewById(R.id.add_entry_send_btn);
+
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    takePhotoBtn.setClickable(false);
+
+                    Entry entry = new Entry(title.getText().toString(), content.getText().toString());
+                    EntryModel.instance.addEntry(entry, new Listeners.Listener<Boolean>() {
+                        @Override
+                        public void onComplete(Boolean data) {
+                            if(data){
+                                EntryModel.instance.refreshEntryList(null);
+                                Navigation.findNavController(v).navigateUp();
+                            }else{
+                                //print error
+                            }
+                        }
+                    });
+                }
+        });
+        return view;
+    }
+
+
+    private void takePhoto() {
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        if (getActivity() != null && intent.resolveActivity(getActivity().getPackageManager()) != null) {
+//            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+//        }
     }
 }

@@ -1,6 +1,8 @@
 package com.ranspektor.andproj;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -10,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.ranspektor.andproj.models.Entry;
+import com.ranspektor.andproj.models.UserModel;
 
 public class HomeActivity extends AppCompatActivity implements EntryListFragment.Delegate, EntryDetailsFragment.EditElementDelegate {
 
@@ -23,6 +26,10 @@ public class HomeActivity extends AppCompatActivity implements EntryListFragment
         navCtrl =  Navigation.findNavController(this,R.id.home_nav_host );
         NavigationUI.setupActionBarWithNavController(this, navCtrl);
 
+        if (!UserModel.instance.isLoggedIn()){
+            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(i);
+        }
     }
 
     @Override
@@ -47,6 +54,13 @@ public class HomeActivity extends AppCompatActivity implements EntryListFragment
                 return true;}
             case R.id.menu_add_entry:{
                 navCtrl.navigate(EntryListFragmentDirections.actionEntryListFragmentToCreateEntryFragment());
+                return true;
+            }
+            case R.id.sign_out_btn:{
+                UserModel.instance.signOut();
+                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
+                return true;
             }
             default: return super.onOptionsItemSelected(item);
         }

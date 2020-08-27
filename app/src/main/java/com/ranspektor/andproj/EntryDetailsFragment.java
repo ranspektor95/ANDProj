@@ -1,7 +1,9 @@
 package com.ranspektor.andproj;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ranspektor.andproj.models.Entry;
+import com.ranspektor.andproj.models.UserModel;
 
 public class EntryDetailsFragment extends Fragment {
     private Entry entry;
@@ -49,20 +52,25 @@ public class EntryDetailsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, @Nullable MenuInflater inflater){
         super.onCreateOptionsMenu(menu,inflater);
         inflater.inflate(R.menu.entry_details_menu,menu);
+
+
+        if(entry.userId == null || !entry.userId.equals(UserModel.instance.getCurrentUserId())){
+            menu.findItem(R.id.edit_btn).setVisible(false);
+        }
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-        //TODO check if user can edit and then
-        setHasOptionsMenu(true);
+         setHasOptionsMenu(true);
 
         if(context instanceof EntryDetailsFragment.EditElementDelegate){
             parent = (EntryDetailsFragment.EditElementDelegate) getActivity();
         } else {
             throw new RuntimeException(context.toString());
         }
+
     }
 
     @Override

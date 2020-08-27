@@ -56,6 +56,7 @@ public class UserFirebase {
     public static void singUp(String email, String password, final Listeners.Listener<String> listener) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
+                    Log.w("TAG", "singUp", task.getException());
                     String id = getCurrentUserId();
                     listener.onComplete(id);
                 });

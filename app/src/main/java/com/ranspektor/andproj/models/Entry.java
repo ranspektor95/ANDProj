@@ -27,6 +27,15 @@ public class Entry implements Serializable {
     public Entry() {
     }
 
+    public Entry(String title,String content ) {
+        this.id = null;
+        this.title = title;
+        this.content = content;
+        this.imgUrl = null;
+        this.userId = null;
+    }
+
+
     public Entry(@NonNull String id, String title, String content, String imgUrl, String userId) {
         this.id = id;
         this.title = title;
