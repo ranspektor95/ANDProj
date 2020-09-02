@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,9 +26,16 @@ import androidx.navigation.Navigation;
 import com.ranspektor.andproj.models.Entry;
 import com.ranspektor.andproj.models.EntryModel;
 import com.ranspektor.andproj.models.Listeners;
+import com.ranspektor.andproj.models.StoreModel;
 import com.ranspektor.andproj.models.UserModel;
+import com.squareup.picasso.Picasso;
+
+import static android.app.Activity.RESULT_OK;
 
 public class EditEntryFragment extends Fragment {
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int RESAULT_SUCCESS = 0;
+
     private Entry req;
 
     View view;
@@ -70,35 +78,56 @@ public class EditEntryFragment extends Fragment {
             update_display();
         }
 
-        takePhotoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePhoto();
-            }
-        });
+        takePhotoBtn.setOnClickListener(v -> takePhoto());
 
-        sendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                takePhotoBtn.setClickable(false);
+        sendBtn.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            takePhotoBtn.setClickable(false);
 
-                Entry entry = new Entry(title.getText().toString(), content.getText().toString());
-                entry.id = req.id;
-                entry.userId = UserModel.instance.getCurrentUserId();
-                EntryModel.instance.updateEntry(entry, new Listeners.Listener<Boolean>() {
+            Entry newEntry = new Entry(title.getText().toString(), content.getText().toString());
+            newEntry.id = req.id;
+            newEntry.userId = UserModel.instance.getCurrentUserId();
+
+            if (imageBitmap != null) {
+                StoreModel.uploadEntryImage(imageBitmap, newEntry.id, new StoreModel.Listener() {
                     @Override
-                    public void onComplete(Boolean data) {
-                        if(data){
-                            EntryModel.instance.refreshEntryList(null);
-                            Navigation.findNavController(v).navigateUp();
-                            Navigation.findNavController(v).navigateUp();
-                        }else{
-                            //print error
-                        }
+                    public void onSuccess(String url) {
+                        Log.d("TAG", "GOOD PHOTO");
+                        newEntry.imgUrl = url;
+
+                        EntryModel.instance.updateEntry(newEntry, data -> {
+                            if(data){
+                                EntryModel.instance.refreshEntryList(null);
+                                Navigation.findNavController(v).navigateUp();
+                                Navigation.findNavController(v).navigateUp();
+                            }else{
+                                //print error
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFail() {
+                        Log.d("TAG", "BAD PHOTO");
+                        // print error
                     }
                 });
+            }else{
+                newEntry.imgUrl = req.imgUrl;
+
+                EntryModel.instance.updateEntry(newEntry, data -> {
+                    if(data){
+                        EntryModel.instance.refreshEntryList(null);
+                        Navigation.findNavController(v).navigateUp();
+                        Navigation.findNavController(v).navigateUp();
+                    }else{
+                        //print error
+                    }
+                });
+
+
             }
+
         });
 
         this.view = view;
@@ -123,13 +152,15 @@ public class EditEntryFragment extends Fragment {
     }
 
     private void update_display(){
-        Log.d("TAG", "update_display");
-
         title.setText(req.title);
-        Log.d("TAG", title.getText().toString());
         content.setText(req.content);
-        Log.d("TAG", content.getText().toString());
 
+        String imgUrl = req.imgUrl;
+        if (imgUrl != null && !imgUrl.equals("")) {
+            Picasso.get().load(imgUrl).into(image);
+        } else {
+            //image.setImageResource(R.drawable.avatar);
+        }
     }
 
     @Override
@@ -155,9 +186,23 @@ public class EditEntryFragment extends Fragment {
 
 
     private void takePhoto() {
-//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        if (getActivity() != null && intent.resolveActivity(getActivity().getPackageManager()) != null) {
-//            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-//        }
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (getActivity() != null && intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            if (data != null) {
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    imageBitmap = (Bitmap) extras.get("data");
+                    image.setImageBitmap(imageBitmap);
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

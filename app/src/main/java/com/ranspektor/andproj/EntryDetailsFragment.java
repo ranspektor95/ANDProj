@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,12 +19,14 @@ import androidx.fragment.app.Fragment;
 
 import com.ranspektor.andproj.models.Entry;
 import com.ranspektor.andproj.models.UserModel;
+import com.squareup.picasso.Picasso;
 
 public class EntryDetailsFragment extends Fragment {
     private Entry entry;
     EditElementDelegate parent;
     TextView title;
     TextView content;
+    ImageView image;
 
     public EntryDetailsFragment() { }
 
@@ -38,6 +41,7 @@ public class EntryDetailsFragment extends Fragment {
         // todo set images from entry;
         title = view.findViewById(R.id.entry_detail_title);
         content = view.findViewById(R.id.entry_detail_content);
+        image = view.findViewById(R.id.entry_details_image);
 
         entry = EntryDetailsFragmentArgs.fromBundle(getArguments()).getReq();
         if(entry != null ){
@@ -87,6 +91,13 @@ public class EntryDetailsFragment extends Fragment {
     private void update_display(){
         title.setText(entry.title);
         content.setText(entry.content);
+
+        String imgUrl = entry.imgUrl;
+        if (imgUrl != null && !imgUrl.equals("")) {
+            Picasso.get().load(imgUrl).into(image);
+        } else {
+            //image.setImageResource(R.drawable.avatar);
+        }
     }
 
     @Override

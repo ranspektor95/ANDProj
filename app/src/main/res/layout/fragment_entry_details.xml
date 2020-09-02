@@ -55,10 +55,16 @@
         <TextView
             android:id="@+id/entry_detail_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="TextView"
             android:textSize="24sp"
             tools:text="content" />
+
+        <ImageView
+            android:id="@+id/entry_details_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:src="@tools:sample/avatars" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
