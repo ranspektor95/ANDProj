@@ -95,8 +95,6 @@ public class EntryDetailsFragment extends Fragment {
         String imgUrl = entry.imgUrl;
         if (imgUrl != null && !imgUrl.equals("")) {
             Picasso.get().load(imgUrl).into(image);
-        } else {
-            //image.setImageResource(R.drawable.avatar);
         }
     }
 

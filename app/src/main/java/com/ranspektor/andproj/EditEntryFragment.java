@@ -158,8 +158,6 @@ public class EditEntryFragment extends Fragment {
         String imgUrl = req.imgUrl;
         if (imgUrl != null && !imgUrl.equals("")) {
             Picasso.get().load(imgUrl).into(image);
-        } else {
-            //image.setImageResource(R.drawable.avatar);
         }
     }
 
